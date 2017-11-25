@@ -75,7 +75,7 @@ class Quiz extends React.Component {
                     <div>
                         <h2>{this.state.album}</h2>
                         <audio controls>
-                            <source src={this.state.preview} type="audio/mpeg"/>
+                            <source src={this.state.media} type="audio/mpeg"/>
                         </audio>
                         {this.state.tracks.map((t) => {
                             return (
