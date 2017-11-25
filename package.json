@@ -1,0 +1,9 @@
+{
+  "name": "galligames",
+  "dependencies": {
+    "babel-preset-env": "^1.6.1",
+    "react": "^16.1.1",
+    "react-dom": "^16.1.1",
+    "socket.io": "^2.0.4"
+  }
+}
