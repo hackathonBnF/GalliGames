@@ -32,7 +32,8 @@ def track():
         tracks.append(t)
     res = {
         'type': 'track',
-        'album': d['title'],
+        'title': d['title'],
+        'question': 'Qui est l\'auteur du morceau dont voici un extrait?',
         'media': tracks[0]['preview'],
         'good': {
             'id': tracks[0]['id'],

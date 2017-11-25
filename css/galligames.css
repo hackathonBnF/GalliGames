@@ -1,0 +1,13 @@
+﻿.bonnereponse.green
+{
+    background: #aedaad !important;
+}
+
+.mauvaisereponse.red
+{
+    background: #daaead !important;
+}
+
+.panel-body .list-group-item {
+    margin-bottom: 15px;
+}
