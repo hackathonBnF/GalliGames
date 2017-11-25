@@ -17,8 +17,9 @@ class Quiz extends React.Component {
     componentWillMount() {
         socket.on('question', (data) => {
             this.setState({
+                type: data.type,
                 album: data.album,
-                preview: data.preview,
+                media: data.media,
                 tracks: data.tracks,
                 message: null,
                 answered: false,

@@ -22,7 +22,12 @@ function shuffle(a) {
 
 function makeQuestion(socket) {
     var str = execSync('python maker.py')
-    socket.emit('question', JSON.parse(str));
+    var d = JSON.parse(str);
+    questions[socket.id] = {
+        good: d.good,
+    };
+    d.good = null;
+    socket.emit('question', d);
 }
 
 io.on('connection', (socket) => {
