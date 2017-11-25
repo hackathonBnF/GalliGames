@@ -1,4 +1,4 @@
-var socket = io('http://localhost:8088');
+var socket = io(config.url);
 
 class Quiz extends React.Component {
 
@@ -10,6 +10,7 @@ class Quiz extends React.Component {
             tracks: null,
             score: 0,
             message: null,
+            answered: false,
         };
     }
 
@@ -20,6 +21,7 @@ class Quiz extends React.Component {
                 preview: data.preview,
                 tracks: data.tracks,
                 message: null,
+                answered: false,
             });
         });
         socket.on('result', (result, title) => {
@@ -51,7 +53,12 @@ class Quiz extends React.Component {
     }
 
     handleAnswer(id) {
-        socket.emit('answer', id);
+        if (!this.state.answered) {
+            this.setState({
+                answered: true,
+            });
+            socket.emit('answer', id);
+        }
     }
 
     render() {
