@@ -68,6 +68,11 @@ function sendRankings(socket) {
 }
 
 function addScore(socket) {
+    if (!rankings[socket.id]) {
+        rankings[socket.id] = {
+            score: 0,
+        };
+    }
     var n = new Date();
     n = n.getTime() / 1000;
     rankings[socket.id].score += Math.round(100 * (start + duration[question.type] - n) / duration[question.type]);
@@ -102,6 +107,7 @@ io.on('connection', (socket) => {
                 }
                 if (good) {
                     addScore(socket.id);
+                    console.log(question.good);
                     socket.emit('result', true, question.good);
                 } else {
                     socket.emit('result', false, question.good);

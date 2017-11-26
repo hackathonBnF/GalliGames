@@ -212,9 +212,18 @@ class Quiz extends React.Component {
                     </div>
                     <div className="col-sm-10">
                         <ul className={"list-unstyled " + (!this.state.answered ? 'sortable' : null)}>
-                            {this.state.tracks.map((t) => {
+                            {this.state.tracks.map((t, i) => {
+                                var c = '';
+                                console.log(this.state.good);
+                                if (this.state.good) {
+                                    if (t.id == this.state.good[i]) {
+                                        c = 'good';
+                                    } else {
+                                        c = 'bad';
+                                    }
+                                }
                                 return (
-                                    <li key={t.id} id={t.id} className="btn btn-default">
+                                    <li key={t.id} id={t.id} className={"btn btn-default " + c}>
                                         <h3 className="list-group-item-heading">{t.title}</h3>
                                         <h4>{t.artist}</h4>
                                         <audio controls style={{width:'100%'}} key={this.state.media}>
