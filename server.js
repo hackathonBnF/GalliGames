@@ -1,6 +1,6 @@
 var port = 8088;
 var duration = {
-    track: 45,
+    track: 35,
     timeline: 60,
 };
 const { execSync } = require('child_process');
