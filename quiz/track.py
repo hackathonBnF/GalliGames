@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import urllib2
 import json
 from random import randint, shuffle
@@ -32,7 +33,8 @@ def track():
         tracks.append(t)
     res = {
         'type': 'track',
-        'album': d['title'],
+        'title': d['title'],
+        'question': 'Quel est le titre de l\'œuvre dont voici un extrait?',
         'media': tracks[0]['preview'],
         'good': {
             'id': tracks[0]['id'],

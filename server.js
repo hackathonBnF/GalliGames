@@ -3,12 +3,9 @@ var request = require('request');
 const { execSync } = require('child_process');
 var io = require('socket.io')(port);
 
-var questions = {};
-
 function getRandomInt(min, max) {
-    //The maximum is exclusive and the minimum is inclusive
-    min = Math.ceil(min);
-    max = Math.floor(max);
+    min = Math.ceil(min); // inclusive
+    max = Math.floor(max); // exclusive
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
@@ -20,35 +17,50 @@ function shuffle(a) {
     return a;
 }
 
-function makeQuestion(socket) {
+var question = null;
+var start = null;
+
+function makeQuestion() {
     var str = execSync('python maker.py')
     var d = JSON.parse(str);
-    questions[socket.id] = {
-        good: d.good,
-    };
-    d.good = null;
-    socket.emit('question', d);
+    question = d;
+    var n = new Date();
+    start = n.getTime() / 1000;
+}
+
+function sendQuestion() {
+    makeQuestion();
+    var d = Object.assign({}, question, {
+        good: null,
+        time: 20,
+    });
+    io.sockets.emit('question', d);
 }
 
 io.on('connection', (socket) => {
-    console.log('user connected');
-    makeQuestion(socket);
+    if (question) {
+        var n = new Date();
+        var d = Object.assign({}, question, {
+            good: null,
+            time: Math.round(start + 20 - n.getTime() / 1000),
+        });
+        socket.emit('question', d);
+    }
     socket.on('answer', (id) => {
-        if (questions[socket.id]) {
-            if (id == questions[socket.id].good.id) {
-                socket.emit('result', true);
-            } else {
-                socket.emit('result', false, questions[socket.id].good.title);
-            }
+        if (id == question.good.id) {
+            socket.emit('result', true);
+        } else {
+            socket.emit('result', false, question.good.title);
         }
     });
-    socket.on('ask', () => {
-        makeQuestion(socket);
-    });
     socket.on('disconnect', () => {
-        io.emit('user disconnected');
         console.log('user disconnected');
     });
 });
 
 console.log('listening on ' + port);
+
+setInterval(() => {
+    sendQuestion();
+}, 20000);
+sendQuestion();
