@@ -1,4 +1,5 @@
 var port = 8088;
+var duration = 45;
 const { execSync } = require('child_process');
 var io = require('socket.io')(port);
 
@@ -16,6 +17,7 @@ function shuffle(a) {
     return a;
 }
 
+var rankings = {};
 var question = null;
 var start = null;
 
@@ -31,9 +33,32 @@ function sendQuestion() {
     makeQuestion();
     var d = Object.assign({}, question, {
         good: null,
-        time: 45,
+        time: duration,
     });
     io.sockets.emit('question', d);
+    sendRankings();
+}
+
+function sendRankings(socket) {
+    var r = [];
+    for (var a in rankings) {
+        if (!rankings.hasOwnProperty(a)) {
+            continue;
+        }
+        r.push({
+            id: a,
+            score: rankings[a].score,
+            name: rankings[a].name,
+        });
+    }
+    r.sort((a, b) => {
+        return a.score < b.score;
+    });
+    if (socket) {
+        socket.emit('rankings', r);
+    } else {
+        io.sockets.emit('rankings', r);
+    }
 }
 
 io.on('connection', (socket) => {
@@ -41,18 +66,27 @@ io.on('connection', (socket) => {
         var n = new Date();
         var d = Object.assign({}, question, {
             good: null,
-            time: Math.round(start + 45 - n.getTime() / 1000),
+            time: Math.round(start + duration - n.getTime() / 1000),
         });
         socket.emit('question', d);
     }
+    rankings[socket.id] = {
+        score: 0,
+        name: 'Inconnu',
+    };
+    sendRankings(socket);
     socket.on('answer', (id) => {
         if (id == question.good.id) {
+            var n = new Date();
+            n = n.getTime() / 1000;
+            rankings[socket.id].score += Math.round(100 * (start + duration - n) / 45);
             socket.emit('result', true, question.good);
         } else {
             socket.emit('result', false, question.good);
         }
     });
     socket.on('disconnect', () => {
+        delete rankings[socket.id];
         console.log('user disconnected');
     });
 });
@@ -61,5 +95,5 @@ console.log('listening on ' + port);
 
 setInterval(() => {
     sendQuestion();
-}, 45000);
+}, duration * 1000);
 sendQuestion();

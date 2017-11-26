@@ -14,6 +14,7 @@ class Quiz extends React.Component {
             question: null,
             answered: false,
             good: null,
+            rankings: [],
         };
     }
 
@@ -44,6 +45,14 @@ class Quiz extends React.Component {
                     good: good.id,
                 });
             }
+        });
+        socket.on('rankings', (rankings) => {
+            this.setState({
+                rankings: rankings.map((r) => {
+                    r.me = (r.id == socket.io);
+                    return r;
+                }),
+            });
         });
     }
 
@@ -76,31 +85,20 @@ class Quiz extends React.Component {
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Username</th>
+                                            <th>Nom</th>
                                             <th>Points</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Mark</td>
-                                            <td>300 pts</td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Otto</td>
-                                            <td>200 pts</td>
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td>Jacob</td>
-                                            <td>150 pts</td>
-                                        </tr>
-                                        <tr>
-                                            <td>4</td>
-                                            <td>Larry</td>
-                                            <td>10 pts</td>
-                                        </tr>
+                                        {this.state.rankings.map((r, i) => {
+                                            return (
+                                                <tr key={r.id}>
+                                                    <td>{i + 1}</td>
+                                                    <td>{r.name}</td>
+                                                    <td>{r.score} pts</td>
+                                                </tr>
+                                            );
+                                        })}
                                     </tbody>
                                 </table>
                             </div>

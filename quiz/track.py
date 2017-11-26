@@ -13,7 +13,7 @@ def track_map(t):
 
 
 def track():
-    data = json.loads(urllib2.urlopen('https://api.deezer.com/search/album?q=bnf').read())
+    data = json.loads(urllib2.urlopen('https://api.deezer.com/search/album?q=bnf&index=' + str(randint(0, 275))).read())
     d = None
     while True:
         d = data['data'][randint(0, len(data['data']) - 1)]
