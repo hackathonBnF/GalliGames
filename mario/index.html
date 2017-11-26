@@ -66,10 +66,16 @@ function preload() {
 			game.load.image('ground2', 'assets/PNG Grass/slice05_05.png');
 			game.load.image('star', 'assets/star.png');
 			game.load.spritesheet('dude', 'assets/hero.png', 140, 195);
-			game.load.spritesheet('notes', 'assets/round_nodetails.png', 256, 256);
+			// game.load.spritesheet('notes', 'assets/round_nodetails.png', 256, 257); //, -1, 0, 1);
+		
+
+			var songs = [ 'data/cmm', 'data/rick', 'data/letitgo' ];
+			var prefix = songs[Math.floor(Math.random()*songs.length)];
 			
-			game.load.json('level', 'level2.json');
-			game.load.json('metadata', 'metadata.json');
+			console.log(prefix);
+
+			game.load.json('level', prefix+'/level.json');
+			game.load.json('metadata', prefix+'/metadata.json');
 }
 
 function draw_portee(){
@@ -82,7 +88,7 @@ function draw_portee(){
 		var track = levelJSON[k];
 		var cursor = 0;
 	
-		console.log(k);
+		// console.log(k);
 
 		for (var po in portee[parseInt(k)-1]){
 			let py = portee[parseInt(k)-1][po];
@@ -112,7 +118,6 @@ function create() {
 	game.add.tileSprite(0, 0, ReallyLargeWidth, 600, 'sky');
 
 	levelJSON = game.cache.getJSON('level');
-
 	metadata = game.cache.getJSON('metadata');
   
 	platforms = game.add.group();
@@ -139,7 +144,7 @@ function create() {
 		var track = levelJSON[k];
 		var cursor = 0;
 	
-		console.log(k);
+		// console.log(k);
 
 		for (var n in track){
 			let note = track[n];
@@ -150,12 +155,11 @@ function create() {
 				var x = cursor;
 				var y = 500 - (16 + (parseInt(k) - 1) * 115 * 2 + note.pitch * 2);
 
-				// var n = notes.create(x, y, 'star');
+				var n = notes.create(x, y, 'star');
 
-				var n = notes.create(x, y, "notes");
-				n.scale.setTo(0.125, 0.125);
-				n.frame = notes_map[Math.floor(Math.random() * notes_map.length)];;
-
+				// var n = notes.create(x, y, "notes");
+				// n.scale.setTo(0.125, 0.125);
+				// n.frame = notes_map[Math.floor(Math.random() * notes_map.length)];;
 
 			}
 		}
@@ -208,7 +212,7 @@ function check_partition(){
 		
 			cursor += note.tick;
 
-			if (note.type == "Note On" && x < cursor + 2 && x > cursor - 2){
+			if (note.type == "Note On" && x < cursor + 4 && x > cursor - 4){
 				var pitch = note.pitch; // the MIDI note
 				var velocity = 127; // how hard the note hits
 				// play the note
