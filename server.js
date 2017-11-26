@@ -2,7 +2,7 @@ var port = 8088;
 var duration = {
     track: 35,
     timeline: 60,
-    mario: 60,
+    mario: 45,
 };
 const { execSync } = require('child_process');
 var io = require('socket.io')(port);
@@ -56,6 +56,7 @@ function sendRankings(socket) {
         r.push({
             id: a,
             score: rankings[a].score,
+            avatar: rankings[a].avatar,
         });
     }
     r.sort((a, b) => {
@@ -72,6 +73,7 @@ function addScore(socket) {
     if (!rankings[socket.id]) {
         rankings[socket.id] = {
             score: 0,
+            avatar: getRandomInt(0, 6),
         };
     }
     var n = new Date();
@@ -91,6 +93,7 @@ io.on('connection', (socket) => {
     }
     rankings[socket.id] = {
         score: 0,
+        avatar: getRandomInt(0, 6),
     };
     sendRankings(socket);
     socket.on('answer', (answer) => {

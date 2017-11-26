@@ -63,3 +63,12 @@ li.placeholder {
 .content {
     margin-top: 20px;
 }
+
+td:not(.avatar) {
+    padding-top: 22px !important;
+}
+
+td.avatar img {
+    height: 50px;
+    margin-right: 10px;
+}

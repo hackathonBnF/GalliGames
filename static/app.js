@@ -126,7 +126,10 @@ class Quiz extends React.Component {
                                             return (
                                                 <tr key={r.id} className={r.me ? 'info' : null}>
                                                     <td>{i + 1}</td>
-                                                    <td>{r.me ? 'Vous' : 'Inconnu'}</td>
+                                                    <td className="avatar">
+                                                        <img src={"static/avatar-" + r.avatar + ".png"}/>
+                                                        {r.me ? 'Vous' : 'Inconnu'}
+                                                    </td>
                                                     <td>{r.score} pts</td>
                                                 </tr>
                                             );
