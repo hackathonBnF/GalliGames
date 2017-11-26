@@ -128,7 +128,7 @@ class Quiz extends React.Component {
                                                     <td>{i + 1}</td>
                                                     <td className="avatar">
                                                         <img src={"static/avatar-" + r.avatar + ".png"}/>
-                                                        {r.me ? 'Vous' : 'Inconnu'}
+                                                        {r.name}
                                                     </td>
                                                     <td>{r.score} pts</td>
                                                 </tr>

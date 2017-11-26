@@ -4,6 +4,20 @@ var duration = {
     timeline: 60,
     mario: 45,
 };
+var names = [
+    'Ludwig',
+    'Erik',
+    'Friedrich',
+    'Wolfgang',
+    'Serge',
+    'Georges',
+    'Ella',
+    'Camille',
+    'Tina',
+    'Madonna',
+    'Dalida',
+    'Jane',
+];
 const { execSync } = require('child_process');
 var io = require('socket.io')(port);
 
@@ -57,6 +71,7 @@ function sendRankings(socket) {
             id: a,
             score: rankings[a].score,
             avatar: rankings[a].avatar,
+            name: rankings[a].name,
         });
     }
     r.sort((a, b) => {
@@ -74,6 +89,7 @@ function addScore(socket) {
         rankings[socket.id] = {
             score: 0,
             avatar: getRandomInt(0, 6),
+            name: names[getRandomInt(0, names.length - 1)],
         };
     }
     var n = new Date();
@@ -94,6 +110,7 @@ io.on('connection', (socket) => {
     rankings[socket.id] = {
         score: 0,
         avatar: getRandomInt(0, 6),
+        name: names[getRandomInt(0, names.length - 1)],
     };
     sendRankings(socket);
     socket.on('answer', (answer) => {
