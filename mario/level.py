@@ -18,6 +18,8 @@ for note in notes:
     notes2[str(note['channel'])].append(note)
 
 for p in pattern:
+    print pattern.text
+
     for track in p:
         print track
         #print track.channel
