@@ -40,13 +40,6 @@
 			console.log(state, progress);
 		},
 		onsuccess: function() {
-			var delay = 0; // play one note every quarter second
-			var note = 50; // the MIDI note
-			var velocity = 127; // how hard the note hits
-			// play the note
-			MIDI.setVolume(0, 127);
-			MIDI.noteOn(0, note, velocity, delay);
-			MIDI.noteOff(0, note, delay + 0.75);
 		}
 	});
 	};
@@ -93,11 +86,9 @@ function create() {
   ground.scale.setTo(2, 2);
   ground.body.immovable = true;
 
-	console.log(levelJSON)
+	// console.log(levelJSON)
 
 	notes = game.add.group();
-
-
 
 	for (var k in levelJSON){
 		var track = levelJSON[k];
@@ -156,12 +147,12 @@ function check_partition(){
 		
 			cursor += note.tick;
 
-			if (note.type == "Note On" && x < cursor + 5 && x > cursor - 5){
+			if (note.type == "Note On" && x < cursor + 2 && x > cursor - 2){
 				var pitch = note.pitch; // the MIDI note
 				var velocity = 127; // how hard the note hits
 				// play the note
 				MIDI.noteOn(0, pitch, velocity, 0);
-				console.log(cursor);
+				// console.log(cursor);
 				MIDI.noteOff(0, pitch, track[String(parseInt(i)+1)].tick);
 			}
 		}
@@ -200,9 +191,9 @@ function update() {
     }
 
     //  Allow the player to jump if they are touching the ground.
-    if (cursors.up.isDown && player.body.touching.down && hitPlatform)
+    if (cursors.up.isDown)
     {
-        player.body.velocity.y = -350;
+        player.body.velocity.y = -250;
     };
 }
 

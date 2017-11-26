@@ -1,8 +1,10 @@
 import midi
 import json
 from collections import defaultdict
+
 # pattern = midi.read_midifile("midi/test.mid")
-pattern = midi.read_midifile("midi/LetItGo.mid")
+#pattern = midi.read_midifile("midi/LetItGo.mid")
+pattern = midi.read_midifile("midi/NeverGonnaGiveYouUp.mid")
 
 level = []
 t = 0
