@@ -103,7 +103,7 @@ function create() {
   game.physics.startSystem(Phaser.Physics.ARCADE);
 	var ReallyLargeWidth = 99999;
 
-	game.world.setBounds(0, 0, ReallyLargeWidth, 600);
+	game.world.setBounds(0, 0, ReallyLargeWidth, 530);
 
 	game.add.tileSprite(0, 0, ReallyLargeWidth, 600, 'sky');
 
@@ -120,9 +120,11 @@ function create() {
 
 	// console.log(levelJSON)
 
+	game.add.tileSprite(0,530, ReallyLargeWidth, 600, 'ground');
+
 	for (var x=0; x < 500; x++){
-		var ground = platforms.create(x*70, 530, 'ground');
-		ground.body.immovable = true;
+		// var ground = platforms.create(x*70, 530, 'ground');
+		// ground.body.immovable = true;
 	}
 	
 	draw_portee();
