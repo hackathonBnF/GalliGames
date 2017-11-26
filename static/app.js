@@ -105,11 +105,9 @@ class Quiz extends React.Component {
         }
         return (
             <div className="container-fluid" role="main">
-                <div className="page-header">
-                    <h1>GalliGames</h1>
-                </div>
                 <div className="row">
-                    <div className="col-sm-3">
+                    <div className="col-sm-4">
+                        <img className="logo" src="static/galligames.gif"/>
                         <div className="panel panel-primary">
                             <div className="panel-heading">
                                 <h3 className="panel-title">Classement</h3>
@@ -138,7 +136,7 @@ class Quiz extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-sm-9">
+                    <div className="col-sm-8 content">
                         {this.state.question ?
                             <div className="panel panel-success">
                                 <div className="panel-heading">

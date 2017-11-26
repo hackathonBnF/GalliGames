@@ -54,3 +54,12 @@ li.placeholder {
     text-align: center;
     font-weight: bold;
 }
+
+.logo {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.content {
+    margin-top: 20px;
+}
