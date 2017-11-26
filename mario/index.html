@@ -152,8 +152,8 @@ function create() {
 	}
 
 	for(var j = 0; j < 500; j++){
-		var ground = platforms.create(j * metadata.resolution*4, 600 - 2*70, 'ground2');
-		ground.body.immovable = true;
+		//var ground = platforms.create(j * metadata.resolution*4, 600 - 2*70, 'ground2');
+		//ground.body.immovable = true;
 		// game.add.sprite(j * metadata.resolution*4,600-24, "star");
 	}
 
@@ -243,7 +243,7 @@ function update() {
     }
 
     //  Allow the player to jump if they are touching the ground.
-    if (cursors.up.isDown && hitPlatform)
+    if (cursors.up.isDown && (player.body.y ==0 || hitPlatform))
     {
         player.body.velocity.y = -250;
     };
