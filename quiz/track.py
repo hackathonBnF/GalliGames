@@ -8,11 +8,12 @@ def track_map(t):
     return {
         'id': t['id'],
         'title': t['title'],
+        'artist': t['artist']['name'],
     }
 
 
 def track():
-    data = json.loads(urllib2.urlopen('https://api.deezer.com/search/album?q=bnf').read())
+    data = json.loads(urllib2.urlopen('https://api.deezer.com/search/album?q=bnf&index=' + str(randint(0, 275))).read())
     d = None
     while True:
         d = data['data'][randint(0, len(data['data']) - 1)]
@@ -36,10 +37,7 @@ def track():
         'title': d['title'],
         'question': 'Quel est le titre de l\'œuvre dont voici un extrait?',
         'media': tracks[0]['preview'],
-        'good': {
-            'id': tracks[0]['id'],
-            'title': tracks[0]['title'],
-        },
+        'good': track_map(tracks[0]),
     }
     shuffle(tracks)
     res['tracks'] = map(track_map, tracks)

@@ -11,9 +11,10 @@ class Quiz extends React.Component {
             preview: null,
             tracks: null,
             timer: 0,
-            message: null,
             question: null,
             answered: false,
+            good: null,
+            rankings: [],
         };
     }
 
@@ -23,8 +24,8 @@ class Quiz extends React.Component {
                 clearInterval(tick);
             }
             this.setState(Object.assign({}, data, {
-                message: null,
                 answered: false,
+                good: null,
             }));
             tick = setInterval(() => {
                 if (this.state.time >= 1) {
@@ -34,16 +35,24 @@ class Quiz extends React.Component {
                 }
             }, 1000);
         });
-        socket.on('result', (result, title) => {
+        socket.on('result', (result, good) => {
             if (result) {
                 this.setState({
-                    message: 'Bravo!',
+                    good: good.id,
                 });
             } else {
                 this.setState({
-                    message: 'Non, raté. C\'était "' + title + '".',
+                    good: good.id,
                 });
             }
+        });
+        socket.on('rankings', (rankings) => {
+            this.setState({
+                rankings: rankings.map((r) => {
+                    r.me = (r.id == socket.io);
+                    return r;
+                }),
+            });
         });
     }
 
@@ -53,7 +62,7 @@ class Quiz extends React.Component {
     handleAnswer(id) {
         if (!this.state.answered) {
             this.setState({
-                answered: true,
+                answered: id,
             });
             socket.emit('answer', id);
         }
@@ -76,31 +85,20 @@ class Quiz extends React.Component {
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Username</th>
+                                            <th>Nom</th>
                                             <th>Points</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Mark</td>
-                                            <td>300 pts</td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Otto</td>
-                                            <td>200 pts</td>
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td>Jacob</td>
-                                            <td>150 pts</td>
-                                        </tr>
-                                        <tr>
-                                            <td>4</td>
-                                            <td>Larry</td>
-                                            <td>10 pts</td>
-                                        </tr>
+                                        {this.state.rankings.map((r, i) => {
+                                            return (
+                                                <tr key={r.id}>
+                                                    <td>{i + 1}</td>
+                                                    <td>{r.name}</td>
+                                                    <td>{r.score} pts</td>
+                                                </tr>
+                                            );
+                                        })}
                                     </tbody>
                                 </table>
                             </div>
@@ -114,13 +112,13 @@ class Quiz extends React.Component {
                                 </div>
                                 <div className="panel-body">
                                     <div className="row">
-                                        <div className="col-sm-10">
-                                            <audio controls style={{width:'100%'}}>
-                                                <source src={this.state.media} type="audio/mpeg"/>
-                                            </audio>
-                                        </div>
                                         <div className="col-sm-2">
                                             <span className="timer">{this.state.time}</span>
+                                        </div>
+                                        <div className="col-sm-10">
+                                            <audio controls autoPlay style={{width:'100%'}} key={this.state.media}>
+                                                <source src={this.state.media} type="audio/mpeg"/>
+                                            </audio>
                                         </div>
                                     </div>
                                     &nbsp;
@@ -128,22 +126,26 @@ class Quiz extends React.Component {
                                     <div className="row">
                                         <div className="list-group">
                                             {this.state.tracks.map((t) => {
+                                                var c = '';
+                                                if (this.state.good) {
+                                                    if (t.id == this.state.good) {
+                                                        c = 'good';
+                                                    } else if (t.id == this.state.answered) {
+                                                        c = 'bad';
+                                                    }
+                                                }
                                                 return (
                                                     <div className="col-sm-6" key={t.id}>
-                                                        <div className="list-group-item" key={t.id}
+                                                        <div className={"list-group-item btn btn-default " + c} key={t.id}
                                                             onClick={() => this.handleAnswer(t.id)}>
-                                                            <h4 className="list-group-item-heading">{t.title}</h4>
+                                                            <h3 className="list-group-item-heading">{t.title}</h3>
+                                                            <h4>{t.artist}</h4>
                                                         </div>
                                                     </div>
                                                 );
                                             })}
                                         </div>
                                     </div>
-                                    {this.state.message ?
-                                        <div className="alert alert-info">
-                                            {this.state.message}
-                                        </div>
-                                    : <div/>}
                                 </div>
                             </div>
                         :
