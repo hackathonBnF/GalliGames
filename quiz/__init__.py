@@ -5,11 +5,13 @@
 #
 
 
+import mario
 import track
 import timeline
 
 
 __all__ = [
+    mario,
     track,
     timeline,
 ]

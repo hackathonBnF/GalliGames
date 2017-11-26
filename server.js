@@ -2,6 +2,7 @@ var port = 8088;
 var duration = {
     track: 35,
     timeline: 60,
+    mario: 60,
 };
 const { execSync } = require('child_process');
 var io = require('socket.io')(port);
@@ -111,7 +112,7 @@ io.on('connection', (socket) => {
                 } else {
                     socket.emit('result', false, question.good);
                 }
-            } else {
+            } else if (question.type == 'track') {
                 if (answer == question.good.id) {
                     addScore(socket);
                     socket.emit('result', true, question.good);
