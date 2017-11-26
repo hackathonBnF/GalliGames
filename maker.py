@@ -12,6 +12,7 @@ from random import randint
 def make_question():
     types = [
         quiz.track.track,
+        quiz.timeline.timeline,
     ]
     t = types[randint(0, len(types) - 1)]
     return t()
