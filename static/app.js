@@ -208,14 +208,7 @@ class Quiz extends React.Component {
                 <div className="row timeline">
                     <div className="col-sm-2">
                         <span className="timer">{this.state.time}</span>
-                        <svg width="200px" height="500px">
-                            <defs>
-                                <marker id="arrow" markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto" markerUnits="strokeWidth">
-                                    <path d="M0,0 L0,6 L9,3 z" fill="#000" />
-                                </marker>
-                            </defs>
-                            <line x1="85" y1="50" x2="85" y2="400" stroke="#000" strokeWidth="5" markerEnd="url(#arrow)" />
-                        </svg>
+                        <img src="static/arrow.gif" style={{width: '100%'}}/>
                     </div>
                     <div className="col-sm-10">
                         <ul className={"list-unstyled " + (!this.state.answered ? 'sortable' : null)}>
