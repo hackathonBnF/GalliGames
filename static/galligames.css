@@ -13,8 +13,8 @@
     min-height: 135px;
 }
 
-.panel-body .list-group-item h3 {
-    white-space: initial;
+.panel-body .list-group-item {
+    white-space: normal;
 }
 
 .panel-body .list-group-item.good, .timeline li.good {
