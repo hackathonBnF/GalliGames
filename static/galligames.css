@@ -29,6 +29,25 @@
     border-color: #d9534f;
 }
 
+.panel-body .timeline li {
+    display: block;
+    cursor: move;
+    min-height: 130px;
+    margin-bottom: 15px;
+}
+
+.dragged {
+    position: absolute;
+    cursor: move;
+    opacity: 0.5;
+    z-index: 2000;
+}
+
+li.placeholder {
+    height: 130px;
+    display: block;
+}
+
 .timer {
     font-size: 2.3em;
     display: block;

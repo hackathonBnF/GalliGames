@@ -1,5 +1,8 @@
 var port = 8088;
-var duration = 45;
+var duration = {
+    track: 45,
+    timeline: 60,
+};
 const { execSync } = require('child_process');
 var io = require('socket.io')(port);
 
@@ -20,6 +23,7 @@ function shuffle(a) {
 var rankings = {};
 var question = null;
 var start = null;
+var answers = {};
 
 function makeQuestion() {
     var str = execSync('python maker.py')
@@ -27,16 +31,19 @@ function makeQuestion() {
     question = d;
     var n = new Date();
     start = n.getTime() / 1000;
+    answers = {};
+    console.log('new question');
 }
 
 function sendQuestion() {
     makeQuestion();
     var d = Object.assign({}, question, {
         good: null,
-        time: duration,
+        time: duration[question.type],
     });
     io.sockets.emit('question', d);
     sendRankings();
+    setTimeout(sendQuestion, duration[question.type] * 1000);
 }
 
 function sendRankings(socket) {
@@ -48,7 +55,6 @@ function sendRankings(socket) {
         r.push({
             id: a,
             score: rankings[a].score,
-            name: rankings[a].name,
         });
     }
     r.sort((a, b) => {
@@ -61,28 +67,54 @@ function sendRankings(socket) {
     }
 }
 
+function addScore(socket) {
+    var n = new Date();
+    n = n.getTime() / 1000;
+    rankings[socket.id].score += Math.round(100 * (start + duration[question.type] - n) / duration[question.type]);
+}
+
 io.on('connection', (socket) => {
+    console.log('user connected');
     if (question) {
         var n = new Date();
         var d = Object.assign({}, question, {
             good: null,
-            time: Math.round(start + duration - n.getTime() / 1000),
+            time: Math.round(start + duration[question.type] - n.getTime() / 1000),
         });
         socket.emit('question', d);
     }
     rankings[socket.id] = {
         score: 0,
-        name: 'Inconnu',
     };
     sendRankings(socket);
-    socket.on('answer', (id) => {
-        if (id == question.good.id) {
-            var n = new Date();
-            n = n.getTime() / 1000;
-            rankings[socket.id].score += Math.round(100 * (start + duration - n) / 45);
-            socket.emit('result', true, question.good);
-        } else {
-            socket.emit('result', false, question.good);
+    socket.on('answer', (answer) => {
+        if (!answers[socket.id]) {
+            answers[socket.id] = true;
+            if (question.type == 'timeline') {
+                var good = true;
+                if (answer.length != question.good.length) {
+                    good = false;
+                }
+                for (var i = 0; i < good.length; i++) {
+                    if (answer[i] != good[i].id) {
+                        good = false;
+                    }
+                }
+                if (good) {
+                    addScore(socket.id);
+                    socket.emit('result', true, question.good);
+                } else {
+                    socket.emit('result', false, question.good);
+                }
+            } else {
+                if (answer == question.good.id) {
+                    addScore(socket.id);
+                    socket.emit('result', true, question.good);
+                } else {
+                    socket.emit('result', false, question.good);
+                }
+            }
+            sendRankings(socket);
         }
     });
     socket.on('disconnect', () => {
@@ -93,7 +125,4 @@ io.on('connection', (socket) => {
 
 console.log('listening on ' + port);
 
-setInterval(() => {
-    sendQuestion();
-}, duration * 1000);
 sendQuestion();
