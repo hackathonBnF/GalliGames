@@ -1,5 +1,7 @@
 var socket = io(config.url);
 
+var tick = null;
+
 class Quiz extends React.Component {
 
     constructor() {
@@ -8,7 +10,7 @@ class Quiz extends React.Component {
             album: null,
             preview: null,
             tracks: null,
-            score: 0,
+            timer: 0,
             message: null,
             question: null,
             answered: false,
@@ -17,31 +19,31 @@ class Quiz extends React.Component {
 
     componentWillMount() {
         socket.on('question', (data) => {
+            if (tick != null) {
+                clearInterval(tick);
+            }
             this.setState(Object.assign({}, data, {
                 message: null,
                 answered: false,
             }));
+            tick = setInterval(() => {
+                if (this.state.time >= 1) {
+                    this.setState({
+                        time: this.state.time - 1,
+                    });
+                }
+            }, 1000);
         });
         socket.on('result', (result, title) => {
             if (result) {
                 this.setState({
                     message: 'Bravo!',
-                    score: this.state.score + 1,
                 });
             } else {
                 this.setState({
                     message: 'Non, raté. C\'était "' + title + '".',
                 });
             }
-            setTimeout(() => {
-                this.setState({
-                    question: null,
-                    message: null,
-                });
-                setTimeout(() => {
-                    socket.emit('ask');
-                }, 2000);
-            }, 3000);
         });
     }
 
@@ -111,9 +113,16 @@ class Quiz extends React.Component {
                                     <h1 className="panel-title">{this.state.question}</h1>
                                 </div>
                                 <div className="panel-body">
-                                    <audio controls style={{width:'100%'}}>
-                                        <source src={this.state.media} type="audio/mpeg"/>
-                                    </audio>
+                                    <div className="row">
+                                        <div className="col-sm-10">
+                                            <audio controls style={{width:'100%'}}>
+                                                <source src={this.state.media} type="audio/mpeg"/>
+                                            </audio>
+                                        </div>
+                                        <div className="col-sm-2">
+                                            <span className="timer">{this.state.time}</span>
+                                        </div>
+                                    </div>
                                     &nbsp;
                                     &nbsp;
                                     <div className="row">

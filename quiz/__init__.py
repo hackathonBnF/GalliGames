@@ -1,8 +1,9 @@
-# 
-# Return must be in JSON format and contains:
+#
+# Quiz types meturn must be in JSON format and contains:
 #     type: type of quiz
 #     good: good answer
-# 
+#
+
 
 import track
 

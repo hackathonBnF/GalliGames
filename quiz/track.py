@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import urllib2
 import json
 from random import randint, shuffle
@@ -33,7 +34,7 @@ def track():
     res = {
         'type': 'track',
         'title': d['title'],
-        'question': 'Qui est l\'auteur du morceau dont voici un extrait?',
+        'question': 'Quel est le titre de l\'œuvre dont voici un extrait?',
         'media': tracks[0]['preview'],
         'good': {
             'id': tracks[0]['id'],
