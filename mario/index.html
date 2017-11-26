@@ -3,29 +3,30 @@
 	<head> 
 			<meta charset="UTF-8" />
 				<title>Phaser - Making your first game, part 1</title>
-					<script type="text/javascript" src="phaser.js"></script>
-					    <style type="text/css">
-        body {
-					            margin: 0;
-												        }
-				    </style>
+	
+				<script type="text/javascript" src="phaser.js"></script>
+				<style type="text/css">
+        	body {
+						margin: 0;
+					}
+				</style>
 	
 	
 	
-		<!-- polyfill -->
-	<script src="/inc/shim/Base64.js" type="text/javascript"></script>
-	<script src="/inc/shim/Base64binary.js" type="text/javascript"></script>
-	<script src="/inc/shim/WebAudioAPI.js" type="text/javascript"></script>
+	<!-- polyfill -->
+	<script src="./inc/shim/Base64.js" type="text/javascript"></script>
+	<script src="./inc/shim/Base64binary.js" type="text/javascript"></script>
+	<script src="./inc/shim/WebAudioAPI.js" type="text/javascript"></script>
 	<!-- midi.js package -->
-	<script src="/js/midi/audioDetect.js" type="text/javascript"></script>
-	<script src="/js/midi/gm.js" type="text/javascript"></script>
-	<script src="/js/midi/loader.js" type="text/javascript"></script>
-	<script src="/js/midi/plugin.audiotag.js" type="text/javascript"></script>
-	<script src="/js/midi/plugin.webaudio.js" type="text/javascript"></script>
-	<script src="/js/midi/plugin.webmidi.js" type="text/javascript"></script>
+	<script src="./js/midi/audioDetect.js" type="text/javascript"></script>
+	<script src="./js/midi/gm.js" type="text/javascript"></script>
+	<script src="./js/midi/loader.js" type="text/javascript"></script>
+	<script src="./js/midi/plugin.audiotag.js" type="text/javascript"></script>
+	<script src="./js/midi/plugin.webaudio.js" type="text/javascript"></script>
+	<script src="./js/midi/plugin.webmidi.js" type="text/javascript"></script>
 	<!-- utils -->
-	<script src="/js/util/dom_request_xhr.js" type="text/javascript"></script>
-	<script src="/js/util/dom_request_script.js" type="text/javascript"></script>
+	<script src="./js/util/dom_request_xhr.js" type="text/javascript"></script>
+	<script src="./js/util/dom_request_script.js" type="text/javascript"></script>
 	
 	
 	</head>
@@ -37,7 +38,7 @@
 		soundfontUrl: "./soundfont/",
 		instrument: "acoustic_grand_piano",
 		onprogress: function(state, progress) {
-			console.log(state, progress);
+			// console.log(state, progress);
 		},
 		onsuccess: function() {
 		}
@@ -61,12 +62,13 @@ function play(){
 
 function preload() {
 	    game.load.image('sky', 'assets/sky.png');
-			game.load.image('ground', 'assets/platform.png');
+			game.load.image('ground', 'assets/PNG Grass/slice03_03.png');
+			game.load.image('ground2', 'assets/PNG Grass/slice05_05.png');
 			game.load.image('star', 'assets/star.png');
 			game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
 	
 			game.load.json('level', 'level2.json');
-
+			game.load.json('metadata', 'metadata.json');
 }
 
 function create() {
@@ -79,15 +81,22 @@ function create() {
 
 	levelJSON = game.cache.getJSON('level');
 
-  platforms = game.add.group();
+	metadata = game.cache.getJSON('metadata');
+  
+	platforms = game.add.group();
   platforms.enableBody = true;
 
-  var ground = platforms.create(0, game.world.height - 64, 'ground');
-  ground.scale.setTo(2, 2);
-  ground.body.immovable = true;
+  // var ground = platforms.create(0, game.world.height - 64, 'ground');
+  // ground.scale.setTo(2, 2);
+  // ground.body.immovable = true;
 
 	// console.log(levelJSON)
 
+	for (var x=0; x < 500; x++){
+		var ground = platforms.create(x*70, 530, 'ground');
+		ground.body.immovable = true;
+	}
+	
 	notes = game.add.group();
 
 	for (var k in levelJSON){
@@ -99,14 +108,21 @@ function create() {
 	
 			cursor += note.tick;
 
-			var x = cursor;
-			var y = parseInt(k)*24;
+			if (note.type == 'Note On'){
+				var x = cursor;
+				var y = 16 + (parseInt(k) - 1) * 24 * 2 + note.pitch * 2;
 
-			// game.add.sprite(x, y,'star')
-			var n = notes.create(x, y, 'star');
-			//n.body.immovable=true;
+				var n = notes.create(x, y, 'star');
+			}
 		}
 	}
+
+	for(var j = 0; j < 500; j++){
+		var ground = platforms.create(j * metadata.resolution*4, 600 - 2*70, 'ground2');
+		ground.body.immovable = true;
+		// game.add.sprite(j * metadata.resolution*4,600-24, "star");
+	}
+
 	player = game.add.sprite(0, 0, 'dude');
 
 	//  We need to enable physics on the player
@@ -169,14 +185,16 @@ function update() {
     if (cursors.left.isDown)
     {   
 	 			//  Move to the left
-        player.body.velocity.x = -250;
+        player.body.velocity.x = - metadata.resolution * 4;
 
         player.animations.play('left');
-    }
+ 				
+				check_partition(player.body.x);
+ 		}
     else if (cursors.right.isDown)
     {
         //  Move to the right
-        player.body.velocity.x = 250;
+        player.body.velocity.x = metadata.resolution * 4;
 
         player.animations.play('right');
   
@@ -191,7 +209,7 @@ function update() {
     }
 
     //  Allow the player to jump if they are touching the ground.
-    if (cursors.up.isDown)
+    if (cursors.up.isDown && hitPlatform)
     {
         player.body.velocity.y = -250;
     };

@@ -22,10 +22,10 @@ for p in pattern:
         print track
         #print track.channel
         print track.name
-        print track.tick
+        print track.data
         if (len(track.data) == 2):
             t = t + track.tick
-            print t 
+            # print t 
 
             data = {
                 'x' : t,
@@ -36,7 +36,11 @@ for p in pattern:
             
             level.append(data)
 
-print notes
+# print notes
+
+meta = {
+    'resolution': pattern.resolution
+}
 
 with open('level.json', 'w') as outfile:
     json.dump(notes, outfile)
@@ -44,3 +48,6 @@ with open('level.json', 'w') as outfile:
 
 with open('level2.json', 'w') as outfile:
     json.dump(notes2, outfile)
+
+with open('metadata.json', 'w') as outfile:
+    json.dump(meta, outfile)
