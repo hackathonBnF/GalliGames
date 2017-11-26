@@ -38,6 +38,7 @@ def timeline():
                     good = False
                     break
         set.append(t)
+    set.sort(key=lambda x: int(x['date']))
     tracks = []
     for s in set:
         data = json.loads(urllib2.urlopen('https://api.deezer.com/track/' + str(s['id'])).read())

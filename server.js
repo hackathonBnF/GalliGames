@@ -100,21 +100,20 @@ io.on('connection', (socket) => {
                 if (answer.length != question.good.length) {
                     good = false;
                 }
-                for (var i = 0; i < good.length; i++) {
-                    if (answer[i] != good[i].id) {
+                for (var i = 0; i < question.good.length; i++) {
+                    if (answer[i] != question.good[i].id) {
                         good = false;
                     }
                 }
                 if (good) {
-                    addScore(socket.id);
-                    console.log(question.good);
+                    addScore(socket);
                     socket.emit('result', true, question.good);
                 } else {
                     socket.emit('result', false, question.good);
                 }
             } else {
                 if (answer == question.good.id) {
-                    addScore(socket.id);
+                    addScore(socket);
                     socket.emit('result', true, question.good);
                 } else {
                     socket.emit('result', false, question.good);

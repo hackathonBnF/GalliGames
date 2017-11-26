@@ -36,15 +36,9 @@ class Quiz extends React.Component {
             }, 1000);
         });
         socket.on('result', (result, good) => {
-            if (result) {
-                this.setState({
-                    good: good.id,
-                });
-            } else {
-                this.setState({
-                    good: good.id,
-                });
-            }
+            this.setState({
+                good: good,
+            });
         });
         socket.on('rankings', (rankings) => {
             this.setState({
@@ -76,14 +70,24 @@ class Quiz extends React.Component {
 
     handleSubmit() {
         if (!this.state.answered && this.state.type == 'timeline') {
+            var tracks = [];
             var order = [];
             $('.sortable li').each((i, c) => {
                 if ($(c).attr('id')) {
                     order.push($(c).attr('id'));
+                    i = 0;
+                    while (i < this.state.tracks.length) {
+                        if (this.state.tracks[i].id == $(c).attr('id')) {
+                            tracks.push(this.state.tracks[i]);
+                            break;
+                        }
+                        i++;
+                    }
                 }
             });
             this.setState({
                 answered: order,
+                tracks: tracks,
             });
             $('.sortable').sortable('destroy');
             socket.emit('answer', order);
@@ -173,7 +177,7 @@ class Quiz extends React.Component {
                         {this.state.tracks.map((t) => {
                             var c = '';
                             if (this.state.good) {
-                                if (t.id == this.state.good) {
+                                if (t.id == this.state.good.id) {
                                     c = 'good';
                                 } else if (t.id == this.state.answered) {
                                     c = 'bad';
@@ -214,17 +218,26 @@ class Quiz extends React.Component {
                         <ul className={"list-unstyled " + (!this.state.answered ? 'sortable' : null)}>
                             {this.state.tracks.map((t, i) => {
                                 var c = '';
-                                console.log(this.state.good);
+                                var d = '';
                                 if (this.state.good) {
-                                    if (t.id == this.state.good[i]) {
+                                    if (t.id == this.state.good[i].id) {
                                         c = 'good';
                                     } else {
                                         c = 'bad';
                                     }
+                                    for (i = 0; i < this.state.good.length; i++) {
+                                        if (this.state.good[i].id == t.id) {
+                                            d = this.state.good[i].date + ' - ';
+                                            break;
+                                        }
+                                    }
                                 }
                                 return (
                                     <li key={t.id} id={t.id} className={"btn btn-default " + c}>
-                                        <h3 className="list-group-item-heading">{t.title}</h3>
+                                        <h3 className="list-group-item-heading">
+                                            {d}
+                                            {t.title}
+                                        </h3>
                                         <h4>{t.artist}</h4>
                                         <audio controls style={{width:'100%'}} key={this.state.media}>
                                             <source src={t.media} type="audio/mpeg"/>

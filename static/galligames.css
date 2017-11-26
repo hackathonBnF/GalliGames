@@ -17,13 +17,13 @@
     white-space: initial;
 }
 
-.panel-body .list-group-item.good {
+.panel-body .list-group-item.good, .timeline li.good {
     color: black;
     background-color: #5cb85c;
     border-color: #5cb85c;
 }
 
-.panel-body .list-group-item.bad {
+.panel-body .list-group-item.bad, .timeline li.bad {
     color: black;
     background-color: #d9534f;
     border-color: #d9534f;
