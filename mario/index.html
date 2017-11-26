@@ -71,6 +71,34 @@ function preload() {
 			game.load.json('metadata', 'metadata.json');
 }
 
+function draw_portee(){
+	var portee = []; 
+
+	portee[0] = [ 43, 47, 50, 53, 57 ];
+	portee[1] = [ 64, 67, 71, 74, 77 ];
+	
+	for (var k in levelJSON){
+		var track = levelJSON[k];
+		var cursor = 0;
+	
+		console.log(k);
+
+		for (var po in portee[parseInt(k)-1]){
+			let py = portee[parseInt(k)-1][po];
+			console.log(py);
+
+			var y = 500 - (16 + (parseInt(k) - 1)* 115 * 2 + py * 2); 
+
+			console.log(y);
+
+			var l = game.add.graphics(0, y );
+			l.lineStyle(1, 0x000000, y);
+			l.lineTo(99999, 16);
+			l.endFill();
+		}
+	}
+}
+
 function create() {
   game.physics.startSystem(Phaser.Physics.ARCADE);
 	var ReallyLargeWidth = 99999;
@@ -97,11 +125,15 @@ function create() {
 		ground.body.immovable = true;
 	}
 	
+	draw_portee();
+	
 	notes = game.add.group();
-
+	
 	for (var k in levelJSON){
 		var track = levelJSON[k];
 		var cursor = 0;
+	
+		console.log(k);
 
 		for (var n in track){
 			let note = track[n];
@@ -110,7 +142,7 @@ function create() {
 
 			if (note.type == 'Note On'){
 				var x = cursor;
-				var y = 16 + (parseInt(k) - 1) * 24 * 2 + note.pitch * 2;
+				var y = 500 - (16 + (parseInt(k) - 1) * 115 * 2 + note.pitch * 2);
 
 				var n = notes.create(x, y, 'star');
 			}
