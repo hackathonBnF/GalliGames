@@ -12,6 +12,18 @@
     margin-bottom: 15px;
 }
 
+.panel-body .list-group-item.good {
+    color: black;
+    background-color: #5cb85c;
+    border-color: #5cb85c;
+}
+
+.panel-body .list-group-item.bad {
+    color: black;
+    background-color: #d9534f;
+    border-color: #d9534f;
+}
+
 .timer {
     font-size: 2.3em;
     display: block;

@@ -11,9 +11,9 @@ class Quiz extends React.Component {
             preview: null,
             tracks: null,
             timer: 0,
-            message: null,
             question: null,
             answered: false,
+            good: null,
         };
     }
 
@@ -23,8 +23,8 @@ class Quiz extends React.Component {
                 clearInterval(tick);
             }
             this.setState(Object.assign({}, data, {
-                message: null,
                 answered: false,
+                good: null,
             }));
             tick = setInterval(() => {
                 if (this.state.time >= 1) {
@@ -34,14 +34,14 @@ class Quiz extends React.Component {
                 }
             }, 1000);
         });
-        socket.on('result', (result, title) => {
+        socket.on('result', (result, good) => {
             if (result) {
                 this.setState({
-                    message: 'Bravo!',
+                    good: good.id,
                 });
             } else {
                 this.setState({
-                    message: 'Non, raté. C\'était "' + title + '".',
+                    good: good.id,
                 });
             }
         });
@@ -53,7 +53,7 @@ class Quiz extends React.Component {
     handleAnswer(id) {
         if (!this.state.answered) {
             this.setState({
-                answered: true,
+                answered: id,
             });
             socket.emit('answer', id);
         }
@@ -118,7 +118,7 @@ class Quiz extends React.Component {
                                             <span className="timer">{this.state.time}</span>
                                         </div>
                                         <div className="col-sm-10">
-                                            <audio controls style={{width:'100%'}} key={this.state.media}>
+                                            <audio controls autoPlay style={{width:'100%'}} key={this.state.media}>
                                                 <source src={this.state.media} type="audio/mpeg"/>
                                             </audio>
                                         </div>
@@ -128,22 +128,26 @@ class Quiz extends React.Component {
                                     <div className="row">
                                         <div className="list-group">
                                             {this.state.tracks.map((t) => {
+                                                var c = '';
+                                                if (this.state.good) {
+                                                    if (t.id == this.state.good) {
+                                                        c = 'good';
+                                                    } else if (t.id == this.state.answered) {
+                                                        c = 'bad';
+                                                    }
+                                                }
                                                 return (
                                                     <div className="col-sm-6" key={t.id}>
-                                                        <div className="list-group-item" key={t.id}
+                                                        <div className={"list-group-item btn btn-default " + c} key={t.id}
                                                             onClick={() => this.handleAnswer(t.id)}>
-                                                            <h4 className="list-group-item-heading">{t.title}</h4>
+                                                            <h3 className="list-group-item-heading">{t.title}</h3>
+                                                            <h4>{t.artist}</h4>
                                                         </div>
                                                     </div>
                                                 );
                                             })}
                                         </div>
                                     </div>
-                                    {this.state.message ?
-                                        <div className="alert alert-info">
-                                            {this.state.message}
-                                        </div>
-                                    : <div/>}
                                 </div>
                             </div>
                         :

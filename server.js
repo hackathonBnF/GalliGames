@@ -47,9 +47,9 @@ io.on('connection', (socket) => {
     }
     socket.on('answer', (id) => {
         if (id == question.good.id) {
-            socket.emit('result', true);
+            socket.emit('result', true, question.good);
         } else {
-            socket.emit('result', false, question.good.title);
+            socket.emit('result', false, question.good);
         }
     });
     socket.on('disconnect', () => {
