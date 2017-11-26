@@ -100,6 +100,8 @@ class Quiz extends React.Component {
             question = this.renderTrack();
         } else if (this.state.type == 'timeline') {
             question = this.renderTimeline();
+        } else if (this.state.type == 'mario') {
+            question = this.renderMario();
         }
         return (
             <div className="container-fluid" role="main">
@@ -251,6 +253,21 @@ class Quiz extends React.Component {
                                 Valider
                             </button>
                         : <div/>}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    renderMario() {
+        return (
+            <div>
+                <div className="row timeline">
+                    <div className="col-sm-2">
+                        <span className="timer">{this.state.time}</span>
+                    </div>
+                    <div className="col-sm-10">
+                        <iframe frameborder="0" width="800" height="600" src="mario/index.html"/>
                     </div>
                 </div>
             </div>

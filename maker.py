@@ -11,6 +11,7 @@ from random import randint
 
 def make_question():
     types = [
+        quiz.mario.mario,
         quiz.track.track,
         quiz.timeline.timeline,
     ]
