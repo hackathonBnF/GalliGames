@@ -114,13 +114,13 @@ class Quiz extends React.Component {
                                 </div>
                                 <div className="panel-body">
                                     <div className="row">
-                                        <div className="col-sm-10">
-                                            <audio controls style={{width:'100%'}}>
-                                                <source src={this.state.media} type="audio/mpeg"/>
-                                            </audio>
-                                        </div>
                                         <div className="col-sm-2">
                                             <span className="timer">{this.state.time}</span>
+                                        </div>
+                                        <div className="col-sm-10">
+                                            <audio controls style={{width:'100%'}} key={this.state.media}>
+                                                <source src={this.state.media} type="audio/mpeg"/>
+                                            </audio>
                                         </div>
                                     </div>
                                     &nbsp;

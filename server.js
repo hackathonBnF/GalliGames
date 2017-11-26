@@ -1,5 +1,4 @@
 var port = 8088;
-var request = require('request');
 const { execSync } = require('child_process');
 var io = require('socket.io')(port);
 
@@ -32,7 +31,7 @@ function sendQuestion() {
     makeQuestion();
     var d = Object.assign({}, question, {
         good: null,
-        time: 20,
+        time: 45,
     });
     io.sockets.emit('question', d);
 }
@@ -42,7 +41,7 @@ io.on('connection', (socket) => {
         var n = new Date();
         var d = Object.assign({}, question, {
             good: null,
-            time: Math.round(start + 20 - n.getTime() / 1000),
+            time: Math.round(start + 45 - n.getTime() / 1000),
         });
         socket.emit('question', d);
     }
@@ -62,5 +61,5 @@ console.log('listening on ' + port);
 
 setInterval(() => {
     sendQuestion();
-}, 20000);
+}, 45000);
 sendQuestion();
