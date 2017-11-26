@@ -3,6 +3,6 @@ import json
 
 def mario():
     return json.dumps({
-        'question': 'La musique!',
+        'question': 'Interlude musical',
         'type': 'mario',
     })

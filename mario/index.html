@@ -179,7 +179,7 @@ function create() {
 
 	//  Player physics properties. Give the little guy a slight bounce.
 	player.body.bounce.y = 0.2;
-	player.body.gravity.y = 300;
+	player.body.gravity.y = 800;
 	player.body.collideWorldBounds = true;
 	player.body.checkCollision.down = true;
 
@@ -218,7 +218,8 @@ function check_partition(){
 				// play the note
 				MIDI.noteOn(0, pitch, velocity, 0);
 				// console.log(cursor);
-				MIDI.noteOff(0, pitch, track[String(parseInt(i)+1)].tick);
+                MIDI.noteOff(0, pitch, track[String(parseInt(i)+1)].tick);
+                player.body.velocity.y = pitch * -2.3;
 			}
 		}
 	}
